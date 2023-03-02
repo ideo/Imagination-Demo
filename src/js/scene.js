@@ -5,7 +5,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { promisifyLoader } from './utils'
 // import { MeshBVH } from 'three-mesh-bvh' // use bvh if you want to switch to buffer geometry see https://github.com/gkjohnson/three-mesh-bvh/blob/master/example/characterMovement.js
 
-import modelFile from '../models/tshirt2.glb'
+// "Tshirt Test" (https://skfb.ly/6VVAS) by lukedew99 is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+import modelFile from '../models/tshirt_test.glb'
 // "VR Gallery" (https://skfb.ly/ooRLp) by Maxim Mavrichev is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 import envFile from '../models/vr_gallery_hq.glb'
 
@@ -80,15 +81,18 @@ export const createScene = async (container) => {
   // const offset = -box.min.y
 
   scene.add(gltf.scene)
-  gltf.scene.scale.set(1.5,1.5,1.5)
-  gltf.scene.position.set(0,-0.5,0)
+  const ssc = 0.015
+  gltf.scene.scale.set(ssc,ssc,ssc)
+  gltf.scene.position.set(0,1,0)
 
   const configTexture = async (url) => {
     const texture = await new THREE.TextureLoader().load(url)
     texture.anisotropy = 1
-    const sc = 2.5
-    texture.offset.set(-((sc - 1) * 0.5), 1 + (sc - 1) * 0.5)
-    texture.repeat.set(sc, -sc)
+    const sc = 1.5
+    texture.repeat.set(sc, sc)
+    texture.offset.set(0.2,-0.475)
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
 
     return texture
   }
