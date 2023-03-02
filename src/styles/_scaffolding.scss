@@ -1,0 +1,30 @@
+html {
+  font-size: $font-size;
+  font-family: $font-family;
+  background: $background-color;
+  color: $font-color;
+  line-height: 1.4;
+}
+
+body {
+  margin: 0;
+}
+
+h1 {
+  margin: 0 0 2rem;
+}
+
+.image {
+  display: inline-block;
+  height: 100px;
+  width: 100px;
+  background-image: url('~assets/example.png');
+  background-size: cover;
+}
+
+#root {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

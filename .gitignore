@@ -1,0 +1,11 @@
+**/.DS_Store
+/node_modules
+/dist
+*.cache
+functions/.env
+functions/.env.default
+functions/.env.local
+src/js/pico/creds.js
+functions/.runtimeconfig.json
+functions/imagination-demo-firebase-adminsdk-vuph6-2d6dfb8040.json
+src/js/firebase.json
