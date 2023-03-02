@@ -12,6 +12,15 @@ yarn install
 ```
 Create a new firebase project and configure hosting, authentication, firestore and functions
 
+- go to https://console.firebase.google.com/ and create a new project
+- go to build -> authentication -> sign-in method and choose Email/Password, create a user and password
+- go to build -> storage and enable firestore
+    - setup cors via `gsutils`
+
+in your repo type `firebase init` and select the id of the project you just made
+
+choose to set up hosting, functions already exist in the repo, do not set up github actions
+
 Sign up for [picovoice](https://console.picovoice.ai/) and create a `creds.js` within `src/js/pico/` that looks like:
 
 ```js
