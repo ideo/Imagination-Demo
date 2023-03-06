@@ -7,9 +7,6 @@ import { promisifyLoader } from './utils'
 
 // "Tshirt Test" (https://skfb.ly/6VVAS) by lukedew99 is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 import modelFile from '../models/tshirt_test.glb'
-import kimonoFile from '../models/kimono.glb'
-import swimsuitFile from '../models/swimsuit.glb'
-
 // "VR Gallery" (https://skfb.ly/ooRLp) by Maxim Mavrichev is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 import envFile from '../models/vr_gallery_hq.glb'
 
@@ -44,7 +41,7 @@ export const createScene = async (container) => {
 
   // text display
   const messGroup = new THREE.Group()
-  messGroup.position.set(0, 2.6, 0)
+  messGroup.position.set(0, 2.5, 0)
   const setMess = setupText(0.125, 0.025, messGroup, 'black')
   scene.add(messGroup)
 
@@ -53,7 +50,7 @@ export const createScene = async (container) => {
   }
 
   const promptGroup = new THREE.Group()
-  promptGroup.position.set(0, 2.2, 0)
+  promptGroup.position.set(0, 2, 0)
   const setPrompt = setupText(0.125, 0.025, promptGroup, 'black')
   scene.add(promptGroup)
 
@@ -77,8 +74,6 @@ export const createScene = async (container) => {
   const loader = promisifyLoader(new GLTFLoader())
 
   const gltf = await loader.load(modelFile)
-  const gltfKimono = await loader.load(kimonoFile)
-  const gltfSwimsuit = await loader.load(swimsuitFile)
 
   // use this if you'd like your model to rest on the ground
   // gltf.scene.updateMatrixWorld(true)
@@ -89,14 +84,6 @@ export const createScene = async (container) => {
   const ssc = 0.015
   gltf.scene.scale.set(ssc,ssc,ssc)
   gltf.scene.position.set(0,1,0)
-
-  scene.add(gltfKimono.scene)
-  gltfKimono.scene.scale.set(ssc,ssc,ssc)
-  gltfKimono.scene.position.set(1,1,0)
-
-  scene.add(gltfSwimsuit.scene)
-  gltfSwimsuit.scene.scale.set(ssc,ssc,ssc)
-  gltfSwimsuit.scene.position.set(-1,1,0)
 
   const configTexture = async (url) => {
     const texture = await new THREE.TextureLoader().load(url)
@@ -110,33 +97,7 @@ export const createScene = async (container) => {
     return texture
   }
 
-  const configTextureKimono = async (url) => {
-    const texture = await new THREE.TextureLoader().load(url)
-    texture.anisotropy = 1
-    const sc = 1
-    texture.repeat.set(sc, sc)
-    texture.offset.set(0.4,-0.1)
-    texture.wrapS = THREE.RepeatWrapping
-    texture.wrapT = THREE.RepeatWrapping
-
-    return texture
-  }
-
-  const configTextureSwimsuit = async (url) => {
-    const texture = await new THREE.TextureLoader().load(url)
-    texture.anisotropy = 1
-    const sc = 1
-    texture.repeat.set(sc, sc)
-    texture.offset.set(0.25,-0.1)
-    texture.wrapS = THREE.RepeatWrapping
-    texture.wrapT = THREE.RepeatWrapping
-
-    return texture
-  }
-
   const texture = await configTexture(aitex)
-  const textureKimono = await configTextureKimono(aitex)
-  const textureSwimsuit = await configTextureSwimsuit(aitex)
 
   let updateMaterials = []
   //Traverse GLTF and update materials
@@ -152,49 +113,12 @@ export const createScene = async (container) => {
       }
     }
   })
-  gltfKimono.scene.traverse((child) => {
-    if (child.isMesh) {
-      child.castShadow = true
-      child.receiveShadow = true
-
-      if (child.material.map) {
-        child.material.map = textureKimono
-        child.material.side = THREE.DoubleSide
-        updateMaterials.push(child.material)
-      }
-    }
-  })
-  gltfSwimsuit.scene.traverse((child) => {
-    if (child.isMesh) {
-      child.castShadow = true
-      child.receiveShadow = true
-
-      if (child.material.map) {
-        child.material.map = textureSwimsuit
-        child.material.side = THREE.DoubleSide
-        updateMaterials.push(child.material)
-      }
-    }
-  })
-
 
   window.updateMaterials = updateMaterials
 
   const updateTexture = async (url) => {
     const newtex = await configTexture(url)
     setMess("Here's your new pattern!")
-    updateMaterials.forEach((m) => {
-      m.map = newtex
-    })
-  }
-  const updateTextureKimono = async (url) => {
-    const newtex = await configTextureKimono(url)
-    updateMaterials.forEach((m) => {
-      m.map = newtex
-    })
-  }
-  const updateTextureSwimsuit = async (url) => {
-    const newtex = await configTextureSwimsuit(url)
     updateMaterials.forEach((m) => {
       m.map = newtex
     })
@@ -300,12 +224,9 @@ export const createScene = async (container) => {
   const retrieveImage = () => {
     if (currentPrompt) {
       getImage(currentPrompt, updateTexture)
-      // getImage(currentPrompt, updateTextureKimono)
-      // getImage(currentPrompt, updateTextureSwimsuit)
       setMess('Retrieving new pattern...')
     }
   }
-
 
   // keyboard mappings
   window.addEventListener(
@@ -327,14 +248,9 @@ export const createScene = async (container) => {
       if (event.code == 'KeyY') {
         retrieveImage()
       }
-
-      if (event.code == 'KeyZ') {
-        switchModel()
-      }
     },
     false
   )
-
   // vr controller mappings
   immersivecontrols.addEventListener('keyup', (e) => {
     if (e.index == 5) retrieveImage()
