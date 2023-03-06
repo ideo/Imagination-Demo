@@ -139,6 +139,8 @@ export const createScene = async (container) => {
   const textureSwimsuit = await configTextureSwimsuit(aitex)
 
   let updateMaterials = []
+  let updateKimonoMaterials = []
+  let updateSwimMaterials = []
   //Traverse GLTF and update materials
   gltf.scene.traverse((child) => {
     if (child.isMesh) {
@@ -160,7 +162,7 @@ export const createScene = async (container) => {
       if (child.material.map) {
         child.material.map = textureKimono
         child.material.side = THREE.DoubleSide
-        updateMaterials.push(child.material)
+        updateKimonoMaterials.push(child.material)
       }
     }
   })
@@ -172,13 +174,10 @@ export const createScene = async (container) => {
       if (child.material.map) {
         child.material.map = textureSwimsuit
         child.material.side = THREE.DoubleSide
-        updateMaterials.push(child.material)
+        updateSwimMaterials.push(child.material)
       }
     }
   })
-
-
-  window.updateMaterials = updateMaterials
 
   const updateTexture = async (url) => {
     const newtex = await configTexture(url)
@@ -189,13 +188,13 @@ export const createScene = async (container) => {
   }
   const updateTextureKimono = async (url) => {
     const newtex = await configTextureKimono(url)
-    updateMaterials.forEach((m) => {
+    updateKimonoMaterials.forEach((m) => {
       m.map = newtex
     })
   }
   const updateTextureSwimsuit = async (url) => {
     const newtex = await configTextureSwimsuit(url)
-    updateMaterials.forEach((m) => {
+    updateSwimMaterials.forEach((m) => {
       m.map = newtex
     })
   }
@@ -300,8 +299,8 @@ export const createScene = async (container) => {
   const retrieveImage = () => {
     if (currentPrompt) {
       getImage(currentPrompt, updateTexture)
-      // getImage(currentPrompt, updateTextureKimono)
-      // getImage(currentPrompt, updateTextureSwimsuit)
+      getImage(currentPrompt, updateTextureKimono)
+      getImage(currentPrompt, updateTextureSwimsuit)
       setMess('Retrieving new pattern...')
     }
   }
@@ -326,10 +325,6 @@ export const createScene = async (container) => {
 
       if (event.code == 'KeyY') {
         retrieveImage()
-      }
-
-      if (event.code == 'KeyZ') {
-        switchModel()
       }
     },
     false
