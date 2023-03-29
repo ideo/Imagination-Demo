@@ -59,7 +59,11 @@ yarn start
 
 You can view the development server at `localhost:8080`.
 
-If you'd like to test your functions locally, switch out your functions url to a local version.
+If you'd like to test your functions locally, switch out your functions url to a local version and run this command in a separate terminal to start the local functions emulator:
+
+```bash
+yarn start-functions
+```
 
 ### Production build
 
